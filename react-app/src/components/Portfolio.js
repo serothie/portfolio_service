@@ -8,215 +8,197 @@ import { Table, Row, Col, Container, Form, Button, Nav, Navbar, FormControl } fr
 const apiUrl = 'http://localhost:5000/'
 
 function Education(props) {
-    const [university, setUniversity] = useState();
-    const [major, setMajor] = useState();
-    const [degree, setDegree] = useState();
-    const [educationInfo, setEducationInfo] = useState();
-    const [updating, setUpdating] = useState();
-    const [form, setForm] = useState();
-    const educations = [];
+    // const [university, setUniversity] = useState();
+    // const [major, setMajor] = useState();
+    // const [degree, setDegree] = useState();
+    const educationInfo = [];
+    const [education, setEducation] = useState();
+    axios.defaults.headers.common['Authorization'] = `Bearer ${props.access_token}`;
 
     useEffect(() => {
-        axios.get(apiUrl + 'portfolio/education', {
+        axios.get(apiUrl+'portfolio/education', {
             params: {
-                user_email: props.userEmail
+                user_email : props.userEmail
             }
         })
         .then(response => {
-            response.data.result.map(function(data) {
-                if (props.updating) {
-                    educations.push(
-                        <tr>
-                          <td>{data[1]}</td>
-                          <td>{data[2]}</td>
-                          <td>{data[3]}</td>
-                          <td>
-                            <Button name={data[0]} onClick={updateEducation}>수정</Button>
-                            <Button name={data[0]} onClick={deleteEducation}>삭제</Button>
-                          </td>
-                        </tr>
+            response.data.result.map(
+                (data) => {
+                    educationInfo.push(
+                        <EducationForm key={data[0]} form={false} university={data[1]} major={data[2]} degree={data[3]} />
                     );
-                    setUpdating(<td>비고</td>);
-                    setForm(
-                        <>
-                        학력 정보 추가
-                        <Form onSubmit={submitEducation}>
-                        <Form.Group controlId="formBasicUniversity">
-                            <Form.Label>학교</Form.Label>
-                            <Form.Control type="text" name='university' onChange={(e) => setUniversity(e.target.value)}placeholder="University" />
-                        </Form.Group>
-
-                        <Form.Group controlId="formBasicMajor">
-                            <Form.Label>전공</Form.Label>
-                            <Form.Control type="text" name='major' onChange={(e) => setMajor(e.target.value)}placeholder="Major" />
-                        </Form.Group>
-
-                        <Form.Group controlId="formBasicMajor">
-                            <Form.Label>학위</Form.Label>
-                            <div>
-                                <Form.Check inline name='degree' label="학사" type='radio' value='학사' onChange={(e) => setDegree(e.target.value)}/>
-                                <Form.Check inline name='degree' label="석사" type='radio' value='석사' onChange={(e) => setDegree(e.target.value)}/>
-                                <Form.Check inline name='degree' label="박사" type='radio' value='박사' onChange={(e) => setDegree(e.target.value)}/>
-                            </div>
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                        </Form>
-                        </>
-                    )
-                } else {
-                    educations.push(
-                        <tr>
-                          <td>{data[1]}</td>
-                          <td>{data[2]}</td>
-                          <td>{data[3]}</td>
-                        </tr>
-                    );
-                    setUpdating(null);
-                    setForm(null);
+                    setEducation(educationInfo);
                 }
-            });
-            setEducationInfo(educations);
+            )
         })
-    }, [educationInfo])
+    }, [])
 
-    function submitEducation(e) {
-        e.preventDefault();
-        setUniversity(e.target.university.value);
-        setMajor(e.target.major.value);
-        setDegree(e.target.degree.value);
 
-        const educationData = {
-            university: university,
-            major: major,
-            degree: degree,
-            user_email: props.userEmail
-        };
+    // function createEducation(e) {
+    //     e.preventDefault();
+    //     setUniversity(e.target.university.value);
+    //     setMajor(e.target.major.value);
+    //     setDegree(e.target.degree.value)
+    //     const educationData = {
+    //         university: university,
+    //         major: major,
+    //         degree: degree,
+    //         user_email: props.userEmail
+    //     }
 
-        axios.post(apiUrl+'portfolio/education', educationData, {
-            headers: {
-                Authorization: `Bearer ${props.access_token}`
-            }
-        })
-    }
+    //     axios.post(apiUrl+'portfolio/education', educationData)
+    // }
 
-    function updateEducation(e) {
+    // function updateEducation(target) {
         
-    }
-
-    function deleteEducation(e) {
-        axios.delete(apiUrl+'portfolio/education', {
-            params: {
-                id: e.target.name
-            }
-        })
-    }
+    // }
+ 
+    // function deleteEducation(target) {
+    //     axios.delete(apiUrl+'portfolio/education', {
+    //         params: {
+    //             id: target
+    //         }
+    //     })
+    // }
 
     return (
         <Container>
-            학력 정보
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>학교</th>
-                  <th>전공</th>
-                  <th>학위</th>
-                  {updating}
-                </tr>
-              </thead>
-              <tbody>
-                {educationInfo}
-              </tbody>
-            </Table>
-            {form}
+            {education}
+            <EducationForm form={true}/>
         </Container>
     )
 }
 
-function Award() {
-    const [award, setAward] = useState();
-    const [details, setDetails] = useState();
+function EducationForm(props) {
+    const [university, setUniversity] = useState();
+    const [major, setMajor] = useState();
+    const [degree, setDegree] = useState();
+    const [form, setForm] = useState(props.form);
 
-    function submitAwardInfo(e) {
-        e.preventDefault();
-        setAward(e.target.award.value);
-        setDetails(e.target.details.value);
-        let awardData = {
-            award: award,
-            details: details
-        }
-    }
-
-    return(
-        <div>
-            수상 이력
-            <form onSubmit={submitAwardInfo}>
-                <label>수상 내역: <input type='text' name='award' onChange = {(e) => setAward(e.target.value)}/></label>
-                <label>상세 내역: <input type='textarea' name='details' onChange = {(e) => setDetails(e.target.value)}/></label>
-                <input type='submit' value='수상 이력 제출'/>
-            </form>
-        </div>
+    return (
+        <Form id={props.id} onClick={form ? null : () => setForm(true)}>
+            <Form.Group as={Row} >
+                <Form.Label column sm={2}>대학</Form.Label>
+                <Col sm={10}>
+                    <Form.Control  type='text' name='university' value={form ? null : props.university} placeholder='University' onChange={(e) => setUniversity(e.target.value)}/>
+                </Col>
+            </Form.Group>
+    
+            <Form.Group as={Row}>
+                <Form.Label column sm={2}>전공</Form.Label>
+                <Col sm={10}>
+                    <Form.Control  type='text' name='major' value={form ? null : props.major} placeholder='Major' onChange={(e) => setMajor(e.target.value)}/>
+                </Col>
+            </Form.Group>
+    
+            <fieldset>
+                <Form.Group as={Row} >
+                    <Form.Label column sm={2}>
+                        학위
+                    </Form.Label>
+                    <Col sm={7}>
+                        
+                        <div>
+                        <Form.Check inline type='radio' name='degree' label='학사' value='학사' onChange={(e) => setDegree(e.target.value)} />
+                        <Form.Check inline type='radio' name='degree' label='석사' value='석사' onChange={(e) => setDegree(e.target.value)} />
+                        <Form.Check inline type='radio' name='degree' label='박사' value='박사' onChange={(e) => setDegree(e.target.value)} />
+                        </div>
+                    
+                        
+                        
+                    </Col>
+                    <Col sm={3}>
+                        
+                        <Button type='submit'>{form ? '저장' : '삭제'}</Button> 
+                       
+                    </Col>
+                </Form.Group>
+            </fieldset>
+        </Form>
     )
 }
 
-function Project() {
-    const [project, setProject] = useState();
-    const [details, setDetails] = useState();
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+// function Award() {
+//     const [award, setAward] = useState();
+//     const [details, setDetails] = useState();
 
-    function submitProjectInfo(e) {
-        e.preventDefault();
-        setProject(e.target.project.value);
-        setDetails(e.target.details.value);
-    }
+//     function submitAwardInfo(e) {
+//         e.preventDefault();
+//         setAward(e.target.award.value);
+//         setDetails(e.target.details.value);
+//         let awardData = {
+//             award: award,
+//             details: details
+//         }
+//     }
 
-    return(
-        <div>
-            프로젝트
-            <form onSubmit={submitProjectInfo}>
-                <label>프로젝트 이름: <input type='text' name='project' onChange={(e) => setProject(e.target.value)}/></label>
-                <label>상세 내역: <input type='textarea' name='details' onChange={(e) => setDetails(e.target.value)}/></label>
-                프로젝트 기간
-                    <div>
-                        <label>시작일: <DatePicker selected={startDate} onChange={date => setStartDate(date)}/></label>
-                        <label>종료일: <DatePicker selected={endDate} onChange={date => setEndDate(date)}/></label>
-                    </div>
-                <input type='submit' value='프로젝트 제출' />
-            </form>
-        </div>
-    )
-}
+//     return(
+//         <div>
+//             수상 이력
+//             <form onSubmit={submitAwardInfo}>
+//                 <label>수상 내역: <input type='text' name='award' onChange = {(e) => setAward(e.target.value)}/></label>
+//                 <label>상세 내역: <input type='textarea' name='details' onChange = {(e) => setDetails(e.target.value)}/></label>
+//                 <input type='submit' value='수상 이력 제출'/>
+//             </form>
+//         </div>
+//     )
+// }
 
-function Certificate() {
-    const [certificate, setCertificate] = useState();
-    const [authority, setAuthority] = useState();
-    const [acquisition, setAcquisition] = useState();
+// function Project() {
+//     const [project, setProject] = useState();
+//     const [details, setDetails] = useState();
+//     const [startDate, setStartDate] = useState();
+//     const [endDate, setEndDate] = useState();
 
-    function submitCertificateInfo(e) {
-        e.preventDefault();
-        setCertificate(e.target.certificate.value);
-        setAuthority(e.target.authority.value);
-    }
+//     function submitProjectInfo(e) {
+//         e.preventDefault();
+//         setProject(e.target.project.value);
+//         setDetails(e.target.details.value);
+//     }
 
-    return(
-        <div>
-            자격증
-            <form onSubmit={submitCertificateInfo}>
-                <label>자격증 이름: <input type='text' name='certificate' onChange={(e) => setCertificate(e.target.value)}/></label>
-                <label>공급 기관: <input type='text' name='authority' onChange={(e) => setAuthority(e.target.value)}/></label>
-                <label>취득 일자: <DatePicker selected={acquisition} onChange={date => setAcquisition(date)}/></label>
-                <input type='submit' value='자격증 제출' />
-            </form>
-        </div>
-    )
-}
+//     return(
+//         <div>
+//             프로젝트
+//             <form onSubmit={submitProjectInfo}>
+//                 <label>프로젝트 이름: <input type='text' name='project' onChange={(e) => setProject(e.target.value)}/></label>
+//                 <label>상세 내역: <input type='textarea' name='details' onChange={(e) => setDetails(e.target.value)}/></label>
+//                 프로젝트 기간
+//                     <div>
+//                         <label>시작일: <DatePicker selected={startDate} onChange={date => setStartDate(date)}/></label>
+//                         <label>종료일: <DatePicker selected={endDate} onChange={date => setEndDate(date)}/></label>
+//                     </div>
+//                 <input type='submit' value='프로젝트 제출' />
+//             </form>
+//         </div>
+//     )
+// }
+
+// function Certificate() {
+//     const [certificate, setCertificate] = useState();
+//     const [authority, setAuthority] = useState();
+//     const [acquisition, setAcquisition] = useState();
+
+//     function submitCertificateInfo(e) {
+//         e.preventDefault();
+//         setCertificate(e.target.certificate.value);
+//         setAuthority(e.target.authority.value);
+//     }
+
+//     return(
+//         <div>
+//             자격증
+//             <form onSubmit={submitCertificateInfo}>
+//                 <label>자격증 이름: <input type='text' name='certificate' onChange={(e) => setCertificate(e.target.value)}/></label>
+//                 <label>공급 기관: <input type='text' name='authority' onChange={(e) => setAuthority(e.target.value)}/></label>
+//                 <label>취득 일자: <DatePicker selected={acquisition} onChange={date => setAcquisition(date)}/></label>
+//                 <input type='submit' value='자격증 제출' />
+//             </form>
+//         </div>
+//     )
+// }
 
 export default function Portfolio() {
     const [userEmail, setUserEmail] = useState();
-    const [updating, setUpdating] = useState(false);
 
     const access_token = getCookie('user_token');
 
@@ -229,24 +211,13 @@ export default function Portfolio() {
         .then(response => setUserEmail(response.data.logged_in_as));
     }, [])
 
-    function handleRead(e) {
-        e.preventDefault();
-        setUpdating(false)
-    }
-
-    function handleUpdate(e) {
-        e.preventDefault();
-        setUpdating(true)
-    }
-
     return (
         <Container>
           <Navbar bg="primary" variant="dark">
               <Navbar.Brand href="/">Racer Portfolio Service</Navbar.Brand>
               <Nav className="mr-auto">
-                <Nav.Link onClick={handleRead}>Portfolio</Nav.Link>
-                <Nav.Link onClick={handleUpdate}>Update</Nav.Link>
-                <Nav.Link >Search</Nav.Link>
+                <Nav.Link >My Portfolio</Nav.Link>
+                <Nav.Link >Search Others</Nav.Link>
                 <Nav.Link onClick={() => deleteCookie('user_token')}>Log Out</Nav.Link>
               </Nav>
 
@@ -258,7 +229,7 @@ export default function Portfolio() {
               프로필 소개
             </Col>
             <Col xs={9}>
-              <Education userEmail = {userEmail} access_token = {access_token} updating={updating}/>
+              <Education userEmail = {userEmail} access_token = {access_token}/>
               {/* <Award userEmail = {userEmail} access_token = {access_token}/>
               <Project userEmail = {userEmail} access_token = {access_token}/>
               <Certificate userEmail = {userEmail} access_token = {access_token}/> */}

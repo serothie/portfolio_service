@@ -48,9 +48,14 @@ class Education(Resource):
 
     def get(self):
         args = parser_education.parse_args()
-        sql = "SELECT id, university, major, degree FROM `education` WHERE `user_email` = %s"
-        cursor.execute(sql, (args['user_email'],))
-        result = cursor.fetchall()
+        if args['id']:
+            sql = "SELECT id, university, major, degree FROM `education` WHERE `id` = %s"
+            cursor.execute(sql, (args['id']))
+            result = cursor.fetchall()
+        else:
+            sql = "SELECT id, university, major, degree FROM `education` WHERE `user_email` = %s"
+            cursor.execute(sql, (args['user_email'],))
+            result = cursor.fetchall()
 
         return jsonify(
             status = 'success',

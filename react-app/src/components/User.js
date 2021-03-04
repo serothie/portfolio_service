@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"
 import {setCookie, getCookie, deleteCookie} from "../utility/user-cookie";
 import { Container, Form, Button, Nav, Navbar, FormControl } from 'react-bootstrap';
+import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 const apiUrl = 'http://localhost:5000/'
 
@@ -165,28 +166,31 @@ function LogIn() {
   }
 
 export default function User() {
-  const [authMain, setAuthMain] = useState(<LogIn />);
+  
 
-  function setSignUp(e) {
-    e.preventDefault();
-    setAuthMain(<SignUp />)
-  }
-
-  function setLogIn(e) {
-    e.preventDefault();
-    setAuthMain(<LogIn />);
-  }
+  
 
   return (
     <Container>
+      <Router>
       <Navbar bg="primary" variant="dark">
         <Navbar.Brand href="/">Racer Portfolio Service</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link onClick={setSignUp}>Sign Up</Nav.Link>
-          <Nav.Link onClick={setLogIn}>Log In</Nav.Link>
+          <Nav.Link href="/signup">Sign Up</Nav.Link>
+          <Nav.Link href='/login'>Log In</Nav.Link>
         </Nav>
       </Navbar>
-      {authMain}
+      <hr />
+
+      <Switch>
+        <Route path="/signup">
+          <SignUp />
+        </Route>
+        <Route path="/login">
+          <LogIn />
+        </Route>
+      </Switch>
+      </Router>
     </Container>
   )
 }
