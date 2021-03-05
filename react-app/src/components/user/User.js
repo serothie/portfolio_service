@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"
-import {setCookie, getCookie, deleteCookie} from "../utility/user-cookie";
+import {setCookie, getCookie, deleteCookie} from "../../utility/user-cookie";
 import { Container, Form, Button, Nav, Navbar, FormControl } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
@@ -136,6 +136,7 @@ function LogIn() {
         } else {
           setLogInMessage(<li>로그인되었습니다.</li>);
           setCookie('user_token', response.data.access_token, 1);
+          setCookie('user_email', response.data.current_user, 1);
         }
       })
     }
@@ -166,9 +167,6 @@ function LogIn() {
   }
 
 export default function User() {
-  
-
-  
 
   return (
     <Container>
