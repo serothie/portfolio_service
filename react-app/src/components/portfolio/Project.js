@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {setCookie, getCookie, deleteCookie} from "../../utility/user-cookie";
 import { Table, Row, Col, Container, Form, Button, Nav, Navbar, FormControl } from 'react-bootstrap';
+
 const apiUrl = 'http://localhost:5000/'
 
 export default function Project(props) {
@@ -32,9 +33,17 @@ export default function Project(props) {
     return(
         <div>
             {projectList.map((project) => 
-                    <ProjectForm form={false} key={project[0]} id={project[0]} project={project[1]} details={project[2]} startDate={project[3]} endDate={project[4]}userEmail={props.userEmail}/>
+                    <ProjectForm 
+                        form={false} 
+                        key={project[0]} 
+                        id={project[0]} 
+                        project={project[1]} 
+                        details={project[2]} 
+                        startDate={new Date(project[3])}
+                        endDate={new Date(project[4])}
+                        userEmail={props.userEmail}/>
                 )}
-                <ProjectForm form={true} userEmail={props.userEmail}/>
+                {props.onUpdate ? <ProjectForm form={true} userEmail={props.userEmail}/> : null}
         </div>
     )
 }
@@ -50,31 +59,27 @@ function ProjectForm(props) {
         e.preventDefault();
         setProject(e.target.project.value);
         setDetails(e.target.details.value);
-        // setStartDate(e.target.startDate.value);
-        // setEndDate(e.target.endDate.value);
         const projectData = {
             project: project,
             details: details,
-            startDate: startDate,
-            endDate: endDate,
-            user_email: props.userEmail,
+            startDate: moment(startDate).format("yyyy-MM-DD"),
+            endDate: moment(endDate).format("yyyy-MM-DD"),
+            user_email: props.userEmail
         }
-        console.log(projectData);
-        // axios.post(apiUrl+'portfolio/project', projectData)
+        axios.post(apiUrl+'portfolio/project', projectData)
     }
     
     function updateProject(e) {
         e.preventDefault();
         setProject(e.target.project.value);
         setDetails(e.target.details.value);
-        // setStartDate(e.target.startDate.value);
-        // setEndDate(e.target.endDate.value);
         const projectData = {
             project: project,
             details: details,
-            startDate: startDate,
-            endDate: endDate,
+            startDate: moment(startDate).format("yyyy-MM-DD"),
+            endDate: moment(endDate).format("yyyy-MM-DD"),
             user_email: props.userEmail,
+            id: e.target.id
         }
 
         axios.put(apiUrl+'portfolio/project', projectData);
@@ -108,10 +113,10 @@ function ProjectForm(props) {
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>수행 기간</Form.Label>
                 <Col sm={5}>
-                시작일 <DatePicker dateFormat="yyyy-MM-dd" name='startDate' selected={startDate} onChange={date => setStartDate(moment(date).format("yyyy-MM-DD"))}/>
+                시작일 <DatePicker dateFormat="yyyy-MM-dd" name='startDate' selected={form ? startDate : props.startDate} onChange={date => setStartDate(date)}/>
                 </Col>
                 <Col sm={5}>
-                종료일 <DatePicker dateFormat="yyyy-MM-dd" name='endDate' selected={endDate} onChange={date => setEndDate(date)}/>
+                종료일 <DatePicker dateFormat="yyyy-MM-dd" name='endDate' selected={form ? endDate : props.endDate} onChange={date => setEndDate(date)}/>
                 </Col>
             </Form.Group>
             

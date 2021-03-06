@@ -39,7 +39,7 @@ function SignUp() {
       setFullname(e.target.fullname.value);
       setEmail(e.target.email.value);
       setPassword(e.target.password.value);
-      setCheck(e.target.passwordCheck.value);
+      setCheck(e.target.check.value);
 
       if (!fullname || !schema_fullname.validate(fullname)) {
         setSignUpMessage(<li>올바른 이름을 입력하세요.(한글 또는 영문자)</li>)
@@ -74,24 +74,24 @@ function SignUp() {
       
       <Container>
         <Form onSubmit = {submitSignUp}>
-          <Form.Group controlId="formBasicFullname">
+          <Form.Group>
             <Form.Label>Fullname</Form.Label>
-            <Form.Control type="text" name="email" onChange={(e) =>setEmail(e.target.value)}placeholder="Your name" />
+            <Form.Control type="text" name="fullname" onChange={(e) =>setFullname(e.target.value)} placeholder="Your name" />
           </Form.Group>
 
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" name='password' onChange={(e) => setPassword(e.target.value)} placeholder="Enter email" />
+            <Form.Control type="email" name='email' onChange={(e) => setEmail(e.target.value)} placeholder="Enter email" />
           </Form.Group>
 
-          <Form.Group controlId="formBasicPassword">
+          <Form.Group>
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" name='password' onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
           </Form.Group>
 
-          <Form.Group controlId="formBasicPasswordCheck">
+          <Form.Group>
             <Form.Label>Password Check</Form.Label>
-            <Form.Control type="password" name='passwordCheck' onChange={(e) => setPassword(e.target.value)} placeholder="Password check" />
+            <Form.Control type="password" name='check' onChange={(e) => setCheck(e.target.value)} placeholder="Password check" />
           </Form.Group>
 
           <Form.Text className="text-muted">

@@ -1,24 +1,13 @@
-import os
 import pymysql
 from flask import Blueprint, Flask, jsonify, request, session
 from flask_restful import reqparse, abort, Api, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
-from dotenv import load_dotenv
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
-
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required, JWTManager
+from app import get_database
 
 user = Blueprint('user', __name__)
 api = Api(user)
-load_dotenv()
-
-db = pymysql.connect(
-        host = os.getenv('MYSQL_HOST'),
-        port = int(os.getenv('MYSQL_PORT')),
-        user = os.getenv('MYSQL_USER'),
-        passwd = os.getenv('MYSQL_PASSWORD'),
-        db = os.getenv('MYSQL_DATABASE'),
-        charset=os.getenv('MYSQL_CHARSET')
-    )
+db = get_database()
 cursor = db.cursor()
 
 parser = reqparse.RequestParser()
@@ -54,7 +43,7 @@ def signup():
 def login():
     args = parser.parse_args()
     if request.method == 'POST':
-        sql = "SELECT `password` FROM `user` WHERE `email` = %s"
+        sql = "SELECT `password`, `fullname` FROM `user` WHERE `email` = %s"
         cursor.execute(sql, (args['email'],))
         result = cursor.fetchone()
         if result:
@@ -64,6 +53,7 @@ def login():
                     status = 'success', 
                     access_token = access_token,
                     current_user = args['email'],
+                    user_name = result[1],
                     result = 'logged in'
                     )
             else:
@@ -76,6 +66,14 @@ def login():
                 status = "failure", 
                 result = 'not registered email'
                 )
+    else:
+        sql = "SELECT `fullname` FROM `user` WHERE `email` = %s"
+        cursor.execute(sql, (args['email'],))
+        result = cursor.fetchone()
+
+        return jsonify(
+            user_name= result
+        )
 
 @user.route("/protected", methods=["GET"])
 @jwt_required()

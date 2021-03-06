@@ -34,7 +34,7 @@ export default function Award(props) {
             {awardList.map((award) => 
                     <AwardForm form={false} key={award[0]} id={award[0]} award={award[1]} details={award[2]} userEmail={props.userEmail}/>
                 )}
-                <AwardForm form={true} userEmail={props.userEmail}/>
+                {props.onUpdate ? <AwardForm form={true} userEmail={props.userEmail}/> : null}
         </div>
     )
 }
@@ -64,6 +64,7 @@ function AwardForm(props) {
             award: award,
             details: details,
             user_email: props.userEmail,
+            id: e.target.id
         }
 
         axios.put(apiUrl+'portfolio/award', awardData);
@@ -110,3 +111,4 @@ function AwardForm(props) {
         </Form>
     )
 }
+

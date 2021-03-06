@@ -34,7 +34,7 @@ export default function Education(props) {
             {educationList.map((education) => 
                     <EducationForm form={false} key={education[0]} id={education[0]} university={education[1]} major={education[2]} degree={education[3]} userEmail={props.userEmail}/>
                 )}
-                <EducationForm form={true} userEmail={props.userEmail}/>
+                {props.onUpdate ? <EducationForm form={true} userEmail={props.userEmail}/> : null}
         </div>
     )
 }
