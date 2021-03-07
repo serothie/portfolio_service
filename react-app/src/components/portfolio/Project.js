@@ -34,6 +34,7 @@ export default function Project(props) {
         <div>
             {projectList.map((project) => 
                     <ProjectForm 
+                        onUpdate = {props.onUpdate}
                         form={false} 
                         key={project[0]} 
                         id={project[0]} 
@@ -43,7 +44,10 @@ export default function Project(props) {
                         endDate={new Date(project[4])}
                         userEmail={props.userEmail}/>
                 )}
-                {props.onUpdate ? <ProjectForm form={true} userEmail={props.userEmail}/> : null}
+                {props.onUpdate ? <ProjectForm 
+                                    onUpdate={props.onUpdate} 
+                                    form={true} 
+                                    userEmail={props.userEmail}/> : null}
         </div>
     )
 }
@@ -51,8 +55,8 @@ export default function Project(props) {
 function ProjectForm(props) {
     const [project, setProject] = useState();
     const [details, setDetails] = useState();
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [startDate, setStartDate] = useState(props.startDate);
+    const [endDate, setEndDate] = useState(props.endDate);
     const [form, setForm] = useState(props.form);
 
     function createProject(e) {
@@ -96,7 +100,7 @@ function ProjectForm(props) {
     }
 
     return(
-        <Form id={props.id} onSubmit={form ? props.id ? (e) => updateProject(e) : (e) => createProject(e) : (e) => deleteProject(e)}>
+        <Form className = {form ? 'before_register' : 'after_register'} id={props.id} onSubmit={form ? props.id ? (e) => updateProject(e) : (e) => createProject(e) : (e) => deleteProject(e)}>
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>프로젝트 이름</Form.Label>
                 <Col sm={10}>
@@ -113,10 +117,10 @@ function ProjectForm(props) {
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>수행 기간</Form.Label>
                 <Col sm={5}>
-                시작일 <DatePicker dateFormat="yyyy-MM-dd" name='startDate' selected={form ? startDate : props.startDate} onChange={date => setStartDate(date)}/>
+                시작일 <DatePicker className='project-datepicker' placeholderText={form ? moment(props.startDate).format('yyyy-MM-DD') : moment(startDate).format("yyyy-MM-DD")} dateFormat="yyyy-MM-dd" name='startDate' selected={form ? startDate : startDate} onChange={date => setStartDate(date)}/>
                 </Col>
                 <Col sm={5}>
-                종료일 <DatePicker dateFormat="yyyy-MM-dd" name='endDate' selected={form ? endDate : props.endDate} onChange={date => setEndDate(date)}/>
+                종료일 <DatePicker className='project-datepicker' placeholderText={form ? moment(props.endDate).format('yyyy-MM-DD') : moment(endDate).format("yyyy-MM-DD")} dateFormat="yyyy-MM-dd" name='endDate' selected={form ? endDate : endDate} onChange={date => setEndDate(date)}/>
                 </Col>
             </Form.Group>
             
@@ -126,9 +130,10 @@ function ProjectForm(props) {
                     <Col sm={9} onClick={form ? null : () => setForm(true)}>
                     </Col>
                     <Col sm={3}>
-                        
-                        <Button type='submit'>{form ? '저장' : '삭제'}</Button> 
-                       
+                        {props.onUpdate ?
+                        <Button type='submit'>{form ? '저장' : '삭제'}</Button> :
+                        null
+                        }
                     </Col>
                 </Row>
             </fieldset>

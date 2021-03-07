@@ -22,6 +22,12 @@ class Certificate(Resource):
     @jwt_required()
     def post(self):
         args = parser_certificate.parse_args()
+        if not args['certificate']:
+            return jsonify(status = 'failure', result = 'certificate is empty')
+        elif not args['authority']:
+            return jsonify(status = 'failure', result = 'authority is empty')           
+        elif not args['acquisition']:
+            return jsonify(status = 'failure', result = 'acquisition is empty')
         sql = "INSERT INTO `certificate` (`certificate_name`, `authority`, `acquisition_date`, `user_email`) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, (args['certificate'], args['authority'], args['acquisition'], args['user_email']))
         db.commit()
@@ -50,6 +56,12 @@ class Certificate(Resource):
     @jwt_required()
     def put(self):
         args = parser_certificate.parse_args()
+        if not args['certificate']:
+            return jsonify(status = 'failure', result = 'certificate is empty')
+        elif not args['authority']:
+            return jsonify(status = 'failure', result = 'authority is empty')           
+        elif not args['acquisition']:
+            return jsonify(status = 'failure', result = 'acquisition is empty')
         sql = "UPDATE `certificate` SET certificate_name = %s, authority = %s, acquisition_date = %s WHERE `id` = %s"
         cursor.execute(sql, (args['certificate'], args['authority'], args['acquisition'], args['id']))
         db.commit()

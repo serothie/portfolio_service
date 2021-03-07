@@ -36,3 +36,41 @@
     transform: rotate(360deg);
   }
 }
+
+.after_register input {
+  border: none;
+  border-color: transparent;
+  background-color: #f9f9f9;
+  padding-left: 0px;
+}
+
+.before_register {
+  background-color: white;
+  border: solid 1px gray;
+}
+
+.after_register .before_register * {
+  border: solid black 1px;
+  margin: 0;
+}
+
+.react-datepicker-wrapper {
+  padding-top: 5px;
+  padding-left: 40px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.container {
+  background-color: #f9f9f9;
+}
+
+.react-datepicker-wrapper {
+  margin-top: 5px;
+}
+
+.project-datepicker {
+  margin-left: 30px;
+}

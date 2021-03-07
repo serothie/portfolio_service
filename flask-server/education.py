@@ -22,6 +22,12 @@ class Education(Resource):
     @jwt_required()
     def post(self):
         args = parser_education.parse_args()
+        if not args['university']:
+            return jsonify(status = 'failure', result = 'university is empty')
+        elif not args['major']:
+            return jsonify(status = 'failure', result = 'major is empty')           
+        elif not args['degree']:
+            return jsonify(status = 'failure', result = 'degree is empty')
         sql = "INSERT INTO `education` (`university`, `major`, `degree`, `user_email`) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, (args['university'], args['major'], args['degree'], args['user_email']))
         db.commit()
@@ -51,6 +57,12 @@ class Education(Resource):
     @jwt_required()
     def put(self):
         args = parser_education.parse_args()
+        if not args['university']:
+            return jsonify(status = 'failure', result = 'university is empty')
+        elif not args['major']:
+            return jsonify(status = 'failure', result = 'major is empty')           
+        elif not args['degree']:
+            return jsonify(status = 'failure', result = 'degree is empty')
         sql = "UPDATE `education` SET university = %s, major = %s, degree = %s WHERE `id` = %s"
         cursor.execute(sql, (args['university'], args['major'], args['degree'], args['id']))
         db.commit()

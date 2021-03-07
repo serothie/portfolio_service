@@ -19,8 +19,11 @@ class Search(Resource):
         user_name = '%' + args['user_name'] + '%'
         sql = "SELECT * FROM `user` WHERE fullname LIKE %s"
         cursor.execute(sql, (user_name ,))
-        searched_users = cursor.fetchall()
+        searched_infos = cursor.fetchall()
+        if searched_infos:
+            return jsonify(status = "success", result = searched_infos)
+        else:
+            return jsonify(status = "success", result = 'no infos')
         
-        return jsonify(status = "success", result = searched_users)
     
 api.add_resource(Search, '/search')

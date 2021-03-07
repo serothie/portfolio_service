@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios"
+import "../../App.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {setCookie, getCookie, deleteCookie} from "../../utility/user-cookie";
@@ -45,7 +46,7 @@ export default function Portfolio() {
                 {searchForm
                 ?
                 <>
-                <SearchArea searchInfo={searchInfo}/>
+                <SearchArea userEmail={userEmail} access_token={access_token} searchInfo={searchInfo}/>
                 </>
                 :
                 <>

@@ -55,7 +55,8 @@ function SignUp() {
         let signUpInfo = {
           fullname: fullname,
           email: email,
-          password: password
+          password: password,
+          check: check
         }
         axios.post(apiUrl+'auth/signup', signUpInfo)
         .then(
@@ -137,6 +138,7 @@ function LogIn() {
           setLogInMessage(<li>로그인되었습니다.</li>);
           setCookie('user_token', response.data.access_token, 1);
           setCookie('user_email', response.data.current_user, 1);
+          
         }
       })
     }

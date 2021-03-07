@@ -21,6 +21,10 @@ class Award(Resource):
     @jwt_required()
     def post(self):
         args = parser_award.parse_args()
+        if not args['award']:
+            return jsonify(status = 'failure', result = 'award is empty')
+        elif not args['details']:
+            return jsonify(status = 'failure', result = 'details is empty')
         sql = "INSERT INTO `award` (`award_name`, `award_details`, `user_email`) VALUES (%s, %s, %s)"
         cursor.execute(sql, (args['award'], args['details'], args['user_email']))
         db.commit()
@@ -49,6 +53,10 @@ class Award(Resource):
     @jwt_required()
     def put(self):
         args = parser_award.parse_args()
+        if not args['award']:
+            return jsonify(status = 'failure', result = 'award is empty')
+        elif not args['details']:
+            return jsonify(status = 'failure', result = 'details is empty')
         sql = "UPDATE `award` SET award_name = %s, award_details = %s WHERE `id` = %s"
         cursor.execute(sql, (args['award'], args['details'], args['id']))
         db.commit()

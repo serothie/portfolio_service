@@ -34,6 +34,7 @@ export default function Certificate(props) {
         <div>
             {certificateList.map((certificate) => 
                 <CertificateForm 
+                    onUpdate = {props.onUpdate}
                     form={false} 
                     key={certificate[0]} 
                     id={certificate[0]} 
@@ -42,7 +43,10 @@ export default function Certificate(props) {
                     acquisition={new Date(certificate[3])} 
                     userEmail={props.userEmail}/>
             )}
-            {props.onUpdate ? <CertificateForm form={true} userEmail={props.userEmail} /> : null}
+            {props.onUpdate ? <CertificateForm 
+                                onUpdate = {props.onUpdate} 
+                                form={true} 
+                                userEmail={props.userEmail} /> : null}
         </div>
     )
 }
@@ -50,8 +54,8 @@ export default function Certificate(props) {
 function CertificateForm(props) {
     const [certificate, setCertificate] = useState();
     const [authority, setAuthority] = useState();
-    const [acquisition, setAcquisition] = useState();
-    const [form, setForm] = useState();
+    const [acquisition, setAcquisition] = useState(props.acquisition);
+    const [form, setForm] = useState(props.form);
 
     function createCertificate(e) {
         e.preventDefault();
@@ -93,7 +97,7 @@ function CertificateForm(props) {
 
     return(
         
-        <Form id={props.id} onSubmit={form ? props.id ? (e) => updateCertificate(e) : (e) => createCertificate(e) : (e) => deleteCertificate(e)}>
+        <Form className = {form ? 'before_register' : 'after_register'} id={props.id} onSubmit={form ? props.id ? (e) => updateCertificate(e) : (e) => createCertificate(e) : (e) => deleteCertificate(e)}>
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>자격증 이름</Form.Label>
                 <Col sm={10}>
@@ -110,10 +114,13 @@ function CertificateForm(props) {
             <Form.Group as={Row}>
                 <Form.Label column sm={2}>취득 일자</Form.Label>
                 <Col sm={7} onClick={form ? null : () => setForm(true)}>
-                <DatePicker dateFormat="yyyy-MM-dd" name='acquisition' selected={form ? acquisition : props.acquisition} onChange={date => setAcquisition(date)}/>
+                <DatePicker dateFormat="yyyy-MM-dd" placeholderText={form ? moment(props.acquisition).format('yyyy-MM-DD') : moment(acquisition).format('yyyy-MM-DD')} name='acquisition' selected={form ? acquisition : acquisition} onChange={date => setAcquisition(date)}/>
                 </Col>
                 <Col sm={3}>
+                    {props.onUpdate ?
                     <Button type='submit'>{form ? '저장' : '삭제'}</Button> 
+                    : null
+                    }
                 </Col>
             </Form.Group>
         </Form>

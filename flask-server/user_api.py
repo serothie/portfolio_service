@@ -15,11 +15,21 @@ parser.add_argument('id')
 parser.add_argument('fullname')
 parser.add_argument('email')
 parser.add_argument('password')
+parser.add_argument('check')
 
 @user.route('/auth/signup', methods=['GET', 'POST'])
 def signup():
     args = parser.parse_args()
     if request.method == 'POST':
+        if not args['fullname']:
+            return jsonify(status = 'failure', result = 'fullname is empty')
+        elif not args['email']:
+            return jsonify(status = 'failure', result = 'email is empty')
+        elif not args['password'] or not args['check']:
+            return jsonify(status = 'failure', result = 'password/check is empty')
+        elif args['password'] != args['check']:
+            return jsonify(status = 'failure', result = 'password/check is not equal')
+
         sql = "SELECT `email` FROM `user` WHERE `email` = %s"
         cursor.execute(sql, (args['email'],))
         result = cursor.fetchone()
@@ -43,6 +53,11 @@ def signup():
 def login():
     args = parser.parse_args()
     if request.method == 'POST':
+        if not args['email']:
+            return jsonify(status = 'failure', result = 'email is empty')
+        elif not args['password']:
+            return jsonify(status = 'failure', result = 'password is empty')
+
         sql = "SELECT `password`, `fullname` FROM `user` WHERE `email` = %s"
         cursor.execute(sql, (args['email'],))
         result = cursor.fetchone()

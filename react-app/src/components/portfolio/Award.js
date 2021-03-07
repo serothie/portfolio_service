@@ -32,9 +32,9 @@ export default function Award(props) {
     return(
         <div>
             {awardList.map((award) => 
-                    <AwardForm form={false} key={award[0]} id={award[0]} award={award[1]} details={award[2]} userEmail={props.userEmail}/>
+                    <AwardForm onUpdate={props.onUpdate} form={false} key={award[0]} id={award[0]} award={award[1]} details={award[2]} userEmail={props.userEmail}/>
                 )}
-                {props.onUpdate ? <AwardForm form={true} userEmail={props.userEmail}/> : null}
+                {props.onUpdate ? <AwardForm onUpdate={props.onUpdate} form={true} userEmail={props.userEmail}/> : null}
         </div>
     )
 }
@@ -81,7 +81,7 @@ function AwardForm(props) {
     }
 
     return(
-        <Form id={props.id} onSubmit={form ? props.id ? (e) => updateAward(e) : (e) => createAward(e) : (e) => deleteAward(e)}>
+        <Form className = {form ? 'before_register' : 'after_register'} id={props.id} onSubmit={form ? props.id ? (e) => updateAward(e) : (e) => createAward(e) : (e) => deleteAward(e)}>
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>수상 내역</Form.Label>
                 <Col sm={10}>
@@ -102,9 +102,9 @@ function AwardForm(props) {
                     <Col sm={9} onClick={form ? null : () => setForm(true)}>
                     </Col>
                     <Col sm={3}>
-                        
+                        {props.onUpdate ?
                         <Button type='submit'>{form ? '저장' : '삭제'}</Button> 
-                       
+                        : null}
                     </Col>
                 </Row>
             </fieldset>

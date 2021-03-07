@@ -24,6 +24,14 @@ class Project(Resource):
     @jwt_required()
     def post(self):
         args = parser_project.parse_args()
+        if not args['project']:
+            return jsonify(status = 'failure', result = 'project is empty')
+        elif not args['details']:
+            return jsonify(status = 'failure', result = 'details is empty')
+        elif not args['startDate']:
+            return jsonify(status = 'failure', result = 'startDate is empty')
+        elif not args['endDate']:
+            return jsonify(status = 'failure', result = 'endDate is empty')
         sql = "INSERT INTO `project` (`project_name`, `project_details`, `start_date`, `end_date`, `user_email`) VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(sql, (args['project'], args['details'], args['startDate'], args['endDate'], args['user_email']))
         db.commit()
@@ -54,6 +62,14 @@ class Project(Resource):
     @jwt_required()
     def put(self):
         args = parser_project.parse_args()
+        if not args['project']:
+            return jsonify(status = 'failure', result = 'project is empty')
+        elif not args['details']:
+            return jsonify(status = 'failure', result = 'details is empty')
+        elif not args['startDate']:
+            return jsonify(status = 'failure', result = 'startDate is empty')
+        elif not args['endDate']:
+            return jsonify(status = 'failure', result = 'endDate is empty')
         sql = "UPDATE `project` SET project_name = %s, project_details = %s, start_date = %s, end_date = %s WHERE `id` = %s"
         cursor.execute(sql, (args['project'], args['details'], args['startDate'], args['endDate'], args['id']))
         db.commit()

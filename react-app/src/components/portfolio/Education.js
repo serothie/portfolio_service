@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -32,9 +32,21 @@ export default function Education(props) {
     return(
         <div>
             {educationList.map((education) => 
-                    <EducationForm form={false} key={education[0]} id={education[0]} university={education[1]} major={education[2]} degree={education[3]} userEmail={props.userEmail}/>
+                    <EducationForm 
+                        onUpdate={props.onUpdate} 
+                        form={false} 
+                        key={education[0]} 
+                        id={education[0]} 
+                        university={education[1]} 
+                        major={education[2]} 
+                        degree={education[3]} 
+                        userEmail={props.userEmail}
+                        />
                 )}
-                {props.onUpdate ? <EducationForm form={true} userEmail={props.userEmail}/> : null}
+                {props.onUpdate ? <EducationForm 
+                                    onUpdate={props.onUpdate} 
+                                    form={true} 
+                                    userEmail={props.userEmail}/> : null}
         </div>
     )
 }
@@ -42,7 +54,7 @@ export default function Education(props) {
 function EducationForm(props) {
     const [university, setUniversity] = useState();
     const [major, setMajor] = useState();
-    const [degree, setDegree] = useState();
+    const [degree, setDegree] = useState(props.degree);
     const [form, setForm] = useState(props.form);
 
     function createEducation(e) {
@@ -86,7 +98,7 @@ function EducationForm(props) {
     }
 
     return (
-        <Form id={props.id} onSubmit={form ? props.id ? (e) => updateEducation(e) : (e) => createEducation(e) : (e) => deleteEducation(e)}>
+        <Form className = {form ? 'before_register' : 'after_register'} id={props.id} onSubmit={form ? props.id ? (e) => updateEducation(e) : (e) => createEducation(e) : (e) => deleteEducation(e)}>
             <Form.Group as={Row} onClick={form ? null : () => setForm(true)}>
                 <Form.Label column sm={2}>대학</Form.Label>
                 <Col sm={10}>
@@ -114,14 +126,15 @@ function EducationForm(props) {
                         <Form.Check inline type='radio' defaultChecked={props.degree==='박사'} name='degree' label='박사' value='박사' onChange={(e) => setDegree(e.target.value)} />
                         </> :
                         <>
-                        <Form.Control type='text' name='degree' defaultValue={props.degree} />
+                        <Form.Control type='text' name='degree' defaultValue={degree} />
                         </>
                         }
                     </Col>
                     <Col sm={3}>
-                        
+                        {props.onUpdate ?
                         <Button type='submit'>{form ? '저장' : '삭제'}</Button> 
-                       
+                        : null
+                        }
                     </Col>
                 </Form.Group>
             </fieldset>

@@ -8,19 +8,19 @@ import { navBar } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 function App() {
-  const [main, setMain] = useState(<User />);
-  
+  const [mainIsUser, setMainIsUser] = useState(true);
+
   useEffect(() => {
     if (getCookie('user_token')) {
-      setMain(<Portfolio/>)
+      setMainIsUser(false) 
     } else {
-      setMain(<User />)
+      setMainIsUser(true)
     }
-  }, [])
+  }, [mainIsUser])
 
   return (
     <div>
-      {main}
+      {mainIsUser ? <User /> : <Portfolio />}
     </div>
   );
 }
