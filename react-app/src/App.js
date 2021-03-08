@@ -18,6 +18,10 @@ function App() {
     }
   }, [mainIsUser])
 
+  function handleMain() {
+    setMainIsUser(!mainIsUser)
+  }
+
   return (
     <div>
       {mainIsUser ? <User /> : <Portfolio />}
